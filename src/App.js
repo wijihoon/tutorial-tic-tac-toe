@@ -37,13 +37,42 @@ function Board({ xIsNext, squares, onPlay }) {
   for (let i = 0; i < Math.sqrt(squares.length); i++) {
     const boardCol = [];
     for (let j = 0; j < Math.sqrt(squares.length); j++) {
-      boardCol.push(
-        <Square
-          value={squares[i * Math.sqrt(squares.length) + j]}
-          onSquareClick={() => handleClick(i * Math.sqrt(squares.length) + j)}
-          key={"col-" + j}
-        />
-      );
+      /*
+       * 5 개선사항
+       * - 승자가 정해지면 승부의 원인이 된 세 개의 사각형을 강조해주세요.
+       */
+      if (winner) {
+        if (i * Math.sqrt(squares.length) + j === winner[j]) {
+          boardCol.push(
+            <Square
+              value={squares[i * Math.sqrt(squares.length) + j]}
+              onSquareClick={() =>
+                handleClick(i * Math.sqrt(squares.length) + j)
+              }
+              key={"col-" + j}
+              style={{ backgroundColor: "red" }}
+            />
+          );
+        } else {
+          boardCol.push(
+            <Square
+              value={squares[i * Math.sqrt(squares.length) + j]}
+              onSquareClick={() =>
+                handleClick(i * Math.sqrt(squares.length) + j)
+              }
+              key={"col-" + j}
+            />
+          );
+        }
+      } else {
+        boardCol.push(
+          <Square
+            value={squares[i * Math.sqrt(squares.length) + j]}
+            onSquareClick={() => handleClick(i * Math.sqrt(squares.length) + j)}
+            key={"col-" + j}
+          />
+        );
+      }
     }
     boardRow.push(
       <div className="board-row" key={`row-${i}`}>
@@ -176,7 +205,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return lines[i];
     }
   }
   return null;
