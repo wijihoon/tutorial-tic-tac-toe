@@ -64,9 +64,10 @@ export default function Game() {
     square: [Array(9).fill(null)],
     index: [0],
     currentMove: 0,
+    isDisplayOrderByAsc: true,
   });
 
-  const { square, index, currentMove } = inputs;
+  const { square, index, currentMove, isDisplayOrderByAsc } = inputs;
 
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = square[currentMove];
@@ -74,6 +75,7 @@ export default function Game() {
   function handlePlay(nextSquares, i) {
     const nextHistory = [...square.slice(0, currentMove + 1), nextSquares];
     setInputs({
+      ...inputs,
       square: nextHistory,
       index: [...index, i],
       currentMove: nextHistory.length - 1,
@@ -86,21 +88,48 @@ export default function Game() {
       currentMove: nextMove,
     });
   }
+
+  /*
+   * 4 개선사항
+   * - 오름차순이나 내림차순으로 이동을 정렬하도록 토글 버튼을 추가해주세요.
+   */
+  function toggleMoves() {
+    setInputs({
+      ...inputs,
+      square: square.reverse(),
+      index: index.reverse(),
+      isDisplayOrderByAsc: !isDisplayOrderByAsc,
+    });
+  }
+
   /*
    * 1 개선사항
    * - 이동 기록 목록에서 특정 형식(행, 열)으로 각 이동의 위치를 표시해주세요.
    */
-  const moves = square.map((move) => {
+  const moves = square.map((squares, move) => {
     let description;
-    if (move > 0) {
-      description =
-        "Go to move (" +
-        (Math.floor(index[move] / 3) + 1) +
-        ", " +
-        ((index[move] % 3) + 1) +
-        ")";
+    if (isDisplayOrderByAsc) {
+      if (move > 0) {
+        description =
+          "Go to move (" +
+          (Math.floor(index[move] / 3) + 1) +
+          ", " +
+          ((index[move] % 3) + 1) +
+          ")";
+      } else {
+        description = "Go to game start";
+      }
     } else {
-      description = "Go to game start";
+      if (move < square.length - 1) {
+        description =
+          "Go to move (" +
+          (Math.floor(index[move] / 3) + 1) +
+          ", " +
+          ((index[move] % 3) + 1) +
+          ")";
+      } else {
+        description = "Go to game start";
+      }
     }
     return (
       /*
@@ -123,6 +152,9 @@ export default function Game() {
       <div className="game-board">
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
+      <button onClick={toggleMoves}>
+        {isDisplayOrderByAsc ? "오름차순 ▲" : "내림차순 ▼"}
+      </button>
       <div className="game-info">
         <ol>{moves}</ol>
       </div>
