@@ -7,7 +7,7 @@
   "main": "/index.js",
   "devDependencies": {},
   "name": "tutorial-tic-tac-toe",
-  "description": null,
+  "description": "tutorial-tic-tac-toe",
   "version": "0.0.0",
   "scripts": {
     "start": "react-scripts start",
