@@ -94,7 +94,12 @@ export default function Game() {
     }
     return (
       <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
+        <button
+          onClick={() => jumpTo(move)}
+          style={{ fontWeight: currentMove === move ? "bold" : "normal" }}
+        >
+          {description}
+        </button>
       </li>
     );
   });
