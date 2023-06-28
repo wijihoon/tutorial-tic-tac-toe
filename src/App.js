@@ -29,25 +29,32 @@ function Board({ xIsNext, squares, onPlay }) {
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
-
+  /*
+   * 3 개선사항
+   * - 사각형들을 만들 때 하드코딩 대신에 두 개의 반복문을 사용하도록 Board를 다시 작성해주세요.
+   */
+  const boardRow = [];
+  for (let i = 0; i < Math.sqrt(squares.length); i++) {
+    const boardCol = [];
+    for (let j = 0; j < Math.sqrt(squares.length); j++) {
+      boardCol.push(
+        <Square
+          value={squares[i * Math.sqrt(squares.length) + j]}
+          onSquareClick={() => handleClick(i * Math.sqrt(squares.length) + j)}
+          key={"col-" + j}
+        />
+      );
+    }
+    boardRow.push(
+      <div className="board-row" key={`row-${i}`}>
+        {boardCol}
+      </div>
+    );
+  }
   return (
     <>
       <div className="status">{status}</div>
-      <div className="board-row">
-        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
-        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
-        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
-        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
-        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
-      </div>
+      {boardRow}
     </>
   );
 }
@@ -79,8 +86,11 @@ export default function Game() {
       currentMove: nextMove,
     });
   }
-
-  const moves = square.map((squares, move) => {
+  /*
+   * 1 개선사항
+   * - 이동 기록 목록에서 특정 형식(행, 열)으로 각 이동의 위치를 표시해주세요.
+   */
+  const moves = square.map((move) => {
     let description;
     if (move > 0) {
       description =
@@ -93,6 +103,10 @@ export default function Game() {
       description = "Go to game start";
     }
     return (
+      /*
+       * 2 개선사항
+       * - 이동 목록에서 현재 선택된 아이템을 굵게 표시해주세요.
+       */
       <li key={move}>
         <button
           onClick={() => jumpTo(move)}
